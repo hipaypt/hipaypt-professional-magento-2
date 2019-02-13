@@ -1,1 +1,1 @@
-# Hipay Professional Magento 2
+# Hipay Professional for Magento 2
