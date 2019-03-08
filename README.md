@@ -1,11 +1,12 @@
 # HiPay Professional Gateway extension for Magento 2
 
 ## API credentials
+
 HiPay API production or sandbox account credentials for each currency:
-    - merchant login
-    - merchant password
-    - website id
-    - website category id: to find the category id, open one of the following urls in your browser and replace WEBSITEID for the real website id. For a production account use https://payment.hipay.com/order/list-categories/id/WEBSITEID and for a test account use https://test-payment.hipay.com/order/list-categories/id/WEBSITEID. Use one of the returned values.
+   - merchant login
+   - merchant password
+   - website id
+   - website category id: to find the category id, open one of the following urls in your browser and replace WEBSITEID for the real website id. For a production account use https://payment.hipay.com/order/list-categories/id/WEBSITEID and for a test account use https://test-payment.hipay.com/order/list-categories/id/WEBSITEID. Use one of the returned values.
 
 ## Setup
     
