@@ -1,0 +1,191 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="payment">
+            <group id="hipay_professional_gateway" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>HiPay Professional</label>
+                <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="sandbox" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Sandbox</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="title" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Title</label>
+                </field>
+                <group id="api_EUR" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" translate="label">
+					<label>Euro Account</label>
+					<field id="merchant_api_login" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant API Login</label>
+					</field>
+					<field id="merchant_api_password" translate="label" type="text" sortOrder="41" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant API Password</label>
+					</field>                
+					<field id="merchant_api_website" translate="label" type="text" sortOrder="42" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant Website ID</label>
+					</field>                
+					<field id="merchant_api_category" translate="label" type="text" sortOrder="43" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant Website Category ID</label>
+						<comment>To find the category ID open one of the following urls in your browser and replace WEBSITEID for the real website id. For a production account use https://payment.hipay.com/order/list-categories/id/WEBSITEID and for a test account use https://test-payment.hipay.com/order/list-categories/id/WEBSITEID. Use one of the returned values.</comment>
+					</field>                
+				</group>  
+				<group id="api_USD" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1" translate="label">
+					<label>US Dollar Account</label>				              
+					<field id="merchant_api_login" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant API Login</label>
+					</field>
+					<field id="merchant_api_password" translate="label" type="text" sortOrder="51" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant API Password</label>
+					</field>                
+					<field id="merchant_api_website" translate="label" type="text" sortOrder="52" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant Website ID</label>
+					</field>                
+					<field id="merchant_api_category" translate="label" type="text" sortOrder="53" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant Website Category ID</label>
+					</field>                
+				</group>
+				<group id="api_GBP" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1" translate="label">
+					<label>British Pound Account</label>				              
+					<field id="merchant_api_login" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant API Login</label>
+					</field>
+					<field id="merchant_api_password" translate="label" type="text" sortOrder="61" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant API Password</label>
+					</field>                
+					<field id="merchant_api_website" translate="label" type="text" sortOrder="62" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant Website ID</label>
+					</field>                
+					<field id="merchant_api_category" translate="label" type="text" sortOrder="63" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant Website Category ID</label>
+						<comment>To find the category ID open one of the following urls in your browser and replace WEBSITEID for the real website id. For a production account use https://payment.hipay.com/order/list-categories/id/WEBSITEID and for a test account use https://test-payment.hipay.com/order/list-categories/id/WEBSITEID. Use one of the returned values.</comment>
+					</field>                
+				</group>
+				<group id="api_AUD" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1" translate="label">
+					<label>Australian Dollar Account</label>				              
+					<field id="merchant_api_login" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant API Login</label>
+					</field>
+					<field id="merchant_api_password" translate="label" type="text" sortOrder="71" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant API Password</label>
+					</field>                
+					<field id="merchant_api_website" translate="label" type="text" sortOrder="72" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant Website ID</label>
+					</field>                
+					<field id="merchant_api_category" translate="label" type="text" sortOrder="73" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant Website Category ID</label>
+						<comment>To find the category ID open one of the following urls in your browser and replace WEBSITEID for the real website id. For a production account use https://payment.hipay.com/order/list-categories/id/WEBSITEID and for a test account use https://test-payment.hipay.com/order/list-categories/id/WEBSITEID. Use one of the returned values.</comment>
+					</field>                
+				</group>
+				<group id="api_CAD" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1" translate="label">
+					<label>Canadian Dollar Account</label>				              
+					<field id="merchant_api_login" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant API Login</label>
+					</field>
+					<field id="merchant_api_password" translate="label" type="text" sortOrder="81" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant API Password</label>
+					</field>                
+					<field id="merchant_api_website" translate="label" type="text" sortOrder="82" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant Website ID</label>
+					</field>                
+					<field id="merchant_api_category" translate="label" type="text" sortOrder="83" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant Website Category ID</label>
+						<comment>To find the category ID open one of the following urls in your browser and replace WEBSITEID for the real website id. For a production account use https://payment.hipay.com/order/list-categories/id/WEBSITEID and for a test account use https://test-payment.hipay.com/order/list-categories/id/WEBSITEID. Use one of the returned values.</comment>
+					</field>                
+				</group>
+				<group id="api_CHF" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1" translate="label">
+					<label>Swiss Franc Account</label>				              
+					<field id="merchant_api_login" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant API Login</label>
+					</field>
+					<field id="merchant_api_password" translate="label" type="text" sortOrder="91" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant API Password</label>
+					</field>                
+					<field id="merchant_api_website" translate="label" type="text" sortOrder="92" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant Website ID</label>
+					</field>                
+					<field id="merchant_api_category" translate="label" type="text" sortOrder="93" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant Website Category ID</label>
+						<comment>To find the category ID open one of the following urls in your browser and replace WEBSITEID for the real website id. For a production account use https://payment.hipay.com/order/list-categories/id/WEBSITEID and for a test account use https://test-payment.hipay.com/order/list-categories/id/WEBSITEID. Use one of the returned values.</comment>
+					</field>                
+				</group>
+				<group id="api_SEK" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1" translate="label">
+					<label>Swedish Krona Account</label>				              
+					<field id="merchant_api_login" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant API Login</label>
+					</field>
+					<field id="merchant_api_password" translate="label" type="text" sortOrder="101" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant API Password</label>
+					</field>                
+					<field id="merchant_api_website" translate="label" type="text" sortOrder="102" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant Website ID</label>
+					</field>                
+					<field id="merchant_api_category" translate="label" type="text" sortOrder="103" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant Website Category ID</label>
+						<comment>To find the category ID open one of the following urls in your browser and replace WEBSITEID for the real website id. For a production account use https://payment.hipay.com/order/list-categories/id/WEBSITEID and for a test account use https://test-payment.hipay.com/order/list-categories/id/WEBSITEID. Use one of the returned values.</comment>
+					</field>                
+				</group>
+				<group id="api_PLN" type="text" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1" translate="label">
+					<label>Polish Zloty Account</label>				              
+					<field id="merchant_api_login" translate="label" type="text" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant API Login</label>
+					</field>
+					<field id="merchant_api_password" translate="label" type="text" sortOrder="121" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant API Password</label>
+					</field>                
+					<field id="merchant_api_website" translate="label" type="text" sortOrder="122" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant Website ID</label>
+					</field>                
+					<field id="merchant_api_category" translate="label" type="text" sortOrder="123" showInDefault="1" showInWebsite="1" showInStore="1">
+						<label>Merchant Website Category ID</label>
+						<comment>To find the category ID open one of the following urls in your browser and replace WEBSITEID for the real website id. For a production account use https://payment.hipay.com/order/list-categories/id/WEBSITEID and for a test account use https://test-payment.hipay.com/order/list-categories/id/WEBSITEID. Use one of the returned values.</comment>
+					</field>                
+				</group>																				
+
+                <field id="debug" translate="label" type="select" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Debug</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+				<field id="technical_email" translate="label" type="text" sortOrder="305" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Technical Email</label>
+					<comment>Receive notifications result on this email.</comment>
+				</field>                               
+				<field id="Website_logo" translate="label" type="text" sortOrder="306" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Website Logo</label>
+					<comment>Logo URL.</comment>
+				</field>                               
+                <field id="website_rating" translate="label" type="select" sortOrder="307" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Website Rating</label>
+                    <source_model>Hipay\HipayProfessionalGateway\Model\Adminhtml\Source\PaymentRating</source_model>
+                </field>
+                <field id="payment_action" translate="label" type="select" sortOrder="310" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Payment Action</label>
+                    <source_model>Hipay\HipayProfessionalGateway\Model\Adminhtml\Source\PaymentAction</source_model>
+					<comment>Not used yet. Always capture automatically.</comment>
+                </field>
+                <field id="allowspecific" translate="label" type="allowspecific" sortOrder="320" showInDefault="9"
+                       showInWebsite="1" showInStore="0">
+                    <label>Payment From Applicable Countries</label>
+                    <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
+                </field>
+                <field id="specificcountry" translate="label" type="multiselect" sortOrder="330" showInDefault="1"
+                       showInWebsite="1" showInStore="0">
+                    <label>Payment From Specific Countries</label>
+                    <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                </field>
+                <field id="sort_order" translate="label" type="text" sortOrder="340" showInDefault="1" showInWebsite="1"
+                       showInStore="0">
+                    <label>Sort Order</label>
+                    <frontend_class>validate-number</frontend_class>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

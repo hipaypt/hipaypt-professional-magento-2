@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Payment Method Facade configuration -->
+    <virtualType name="HipayProfessionalGatewayFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">\Hipay\HipayProfessionalGateway\Model\Ui\ConfigProvider::CODE</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">Hipay\HipayProfessionalGateway\Block\Info</argument>
+            <argument name="valueHandlerPool" xsi:type="object">HipayProfessionalGatewayValueHandlerPool</argument>
+            <argument name="commandPool" xsi:type="object">HipayProfessionalGatewayCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Configuration reader -->
+    <virtualType name="HipayProfessionalGatewayConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">\Hipay\HipayProfessionalGateway\Model\Ui\ConfigProvider::CODE</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Logger, initialized with HipayProfessionalGatewayConfig -->
+    <virtualType name="HipayProfessionalGatewayLogger" type="Magento\Payment\Model\Method\Logger">
+        <arguments>
+            <argument name="config" xsi:type="object">HipayProfessionalGatewayConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Hipay\HipayProfessionalGateway\Gateway\Http\Client\ClientProcessor">
+        <arguments>
+            <argument name="logger" xsi:type="object">HipayProfessionalGatewayLogger</argument>
+        </arguments>
+    </type>
+
+    <!-- Commands infrastructure -->
+    <virtualType name="HipayProfessionalGatewayCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="authorize" xsi:type="string">HipayProfessionalGatewayAuthorizeCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Authorize command -->
+    <virtualType name="HipayProfessionalGatewayAuthorizeCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">HipayProfessionalGatewayAuthorizationRequest</argument>
+            <argument name="handler" xsi:type="object">HipayProfessionalGatewayResponseHandlerComposite</argument>
+            <argument name="transferFactory" xsi:type="object">Hipay\HipayProfessionalGateway\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Hipay\HipayProfessionalGateway\Gateway\Http\Client\ClientProcessor</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Authorization Request -->
+    <virtualType name="HipayProfessionalGatewayAuthorizationRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="transaction" xsi:type="string">Hipay\HipayProfessionalGateway\Gateway\Request\AuthorizationRequest</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="Hipay\HipayProfessionalGateway\Gateway\Request\AuthorizationRequest">
+        <arguments>
+            <argument name="config" xsi:type="object">HipayProfessionalGatewayConfig</argument>
+        </arguments>
+    </type>
+
+    <!-- Response handlers -->
+    <virtualType name="HipayProfessionalGatewayResponseHandlerComposite" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="txnid" xsi:type="string">Hipay\HipayProfessionalGateway\Gateway\Response\TxnIdHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Value handlers infrastructure -->
+    <virtualType name="HipayProfessionalGatewayValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">HipayProfessionalGatewayConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="HipayProfessionalGatewayConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">HipayProfessionalGatewayConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Hipay\HipayProfessionalGateway\Block\Info">
+        <arguments>
+            <argument name="config" xsi:type="object">HipayProfessionalGatewayConfig</argument>
+        </arguments>
+    </type>
+
+</config>
