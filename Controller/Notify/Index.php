@@ -16,144 +16,121 @@ class Index extends AppAction
     protected $_order;
     protected $_sandbox;
     protected $_credentials;
+    protected $_logger;
  	
     public function __construct(
-		\Magento\Framework\App\Action\Context $context
+        Context $context
     ) {
-		
         parent::__construct($context);
         $this->_messageManager = $context->getMessageManager();
+
+        if (interface_exists("\Magento\Framework\App\CsrfAwareActionInterface")) {
+            $request = $this->getRequest();
+            if ($request instanceof HttpRequest && $request->isPost()) {
+                $request->setParam('isAjax', true);
+                $request->getHeaders()->addHeaderLine('X_REQUESTED_WITH', 'XMLHttpRequest');
+            }
+        }
     }
+    
     
     public function execute()
     {
 		
-		if(!isset($_POST["xml"])) {
-			return;
-		};
-		$xml = $_POST['xml'];
-		$obj = new \SimpleXMLElement(trim($xml));
+        $params = $this->getRequest()->getPostValue();
 
-		if (isset($obj->result[0])) 
-		{
+        try {
+
+			if(!isset($params["operation"])) {
+				echo "no xml";
+				return;
+			};
 			
-			$ispayment =  true;
-			if (isset($obj->result[0]->operation))
-				$operation=$obj->result[0]->operation;
-			else
-				$ispayment =  false;
+			$operation=$params["operation"];
+			$status=$params["status"];
+			$date=$params["date"];
+			$time=$params["time"];
+			$transid=$params["transid"];
+			$origAmount=$params["origAmount"];
+			$origCurrency=$params["origCurrency"];
+			$idformerchant=$params["idForMerchant"];
 
-			if (isset($obj->result[0]->status))
-				$status=$obj->result[0]->status;
-			else 
-				$ispayment =  false;
+			$this->_order = $this->_objectManager->create('\Magento\Sales\Model\Order')->loadByIncrementId($idformerchant);
+			if ($this->_order->getGrandTotal() <> $origAmount){
+					echo "Amount does not match. " . $this->_order->getGrandTotal()  . " and " . $origAmount;
+					exit;
+			}
 
-			if (isset($obj->result[0]->date))
-				$date=$obj->result[0]->date;
-			else 
-				$ispayment =  false;
+			$storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORES;
+			$this->_sandbox 		= $this->_objectManager->get('Magento\Framework\App\Config\ScopeConfigInterface')->getValue('payment/hipay_professional_gateway/sandbox',$storeScope);
+			$this->_credentials	= $this->_objectManager->get('Magento\Framework\App\Config\ScopeConfigInterface')->getValue('payment/hipay_professional_gateway/api_' . $origCurrency,$storeScope);
+			$hipayTransaction = $this->getTransactionStatus($transid,$origCurrency,$origAmount);
 
-			if (isset($obj->result[0]->time))
-				$time=$obj->result[0]->time;
-			else 
-				$ispayment =  false;
-
-			if (isset($obj->result[0]->transid))
-				$transid=$obj->result[0]->transid;
-			else 
-				$ispayment =  false;
-
-			if (isset($obj->result[0]->origAmount))
-				$origAmount=$obj->result[0]->origAmount;
-			else 
-				$ispayment =  false;
-
-			if (isset($obj->result[0]->origCurrency))
-				$origCurrency=$obj->result[0]->origCurrency;
-			else 
-				$ispayment = false;
-
-			if (isset($obj->result[0]->idForMerchant))
-				$idformerchant=$obj->result[0]->idForMerchant;
-			else 
-				$ispayment =  false;
-
-
-			if ($ispayment===true) {
-
-				$this->_order = $this->_objectManager->create('\Magento\Sales\Model\Order')->loadByIncrementId($idformerchant);
-				if ($this->_order->getGrandTotal() <> $origAmount){
-						echo "Amount does not match. " . $this->_order->getGrandTotal()  . " and " . $origAmount;
-						exit;
-				}
+			switch($operation){
 				
-				$storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORES;
-				$this->_sandbox 		= $this->_objectManager->get('Magento\Framework\App\Config\ScopeConfigInterface')->getValue('payment/hipay_professional_gateway/sandbox',$storeScope);
-				$this->_credentials	= $this->_objectManager->get('Magento\Framework\App\Config\ScopeConfigInterface')->getValue('payment/hipay_professional_gateway/api_' . $origCurrency,$storeScope);
-				$hipayTransaction = $this->getTransactionStatus($transid,$origCurrency,$origAmount);
-				
-				switch($operation){
-					
-					case "capture":
-						if ($status == "ok" && $hipayTransaction->getDetailsResult->code == "0" && $hipayTransaction->getDetailsResult->amount == $origAmount && $hipayTransaction->getDetailsResult->currency == $origCurrency && strtolower($hipayTransaction->getDetailsResult->transactionStatus) == "captured"){
-			
-							echo "CAPTURE!";
-							if ($this->_order->getState() != \Magento\Sales\Model\Order::STATE_CANCELED && $this->_order->getState() != \Magento\Sales\Model\Order::STATE_PROCESSING){
-								$this->_order->setState(\Magento\Sales\Model\Order::STATE_PROCESSING)->setStatus("processing");
-								$comment = "Captured, " . date('Y-m-d H:i:s');
-								$this->_order->addStatusHistoryComment($comment)->setIsCustomerNotified(true)->setEntityName('order');
-								$this->_order->save();
-							}	
-							
-						} elseif ($status == "nok" && $hipayTransaction->getDetailsResult->code == "0" && $hipayTransaction->getDetailsResult->amount == $origAmount && $hipayTransaction->getDetailsResult->currency == $origCurrency && strtolower($hipayTransaction->getDetailsResult->transactionStatus) != "captured"){
-
-							if ($this->_order->getState() != \Magento\Sales\Model\Order::STATE_CANCELED && $this->_order->getState() != \Magento\Sales\Model\Order::STATE_PROCESSING){
-								$this->_order->setState(\Magento\Sales\Model\Order::STATE_CANCELED)->setStatus("canceled");
-								$comment = "Capture failed, " . date('Y-m-d H:i:s');
-								$this->_order->addStatusHistoryComment($comment)->setIsCustomerNotified(true)->setEntityName('order');
-								$this->_order->save();	
-								echo "NO CAPTURE!";
-							}
-						}
-						break;
-					case "authorization":
-						if ($status == "nok"  && $hipayTransaction->getDetailsResult->code == "0" && $hipayTransaction->getDetailsResult->amount == $origAmount && $hipayTransaction->getDetailsResult->currency == $origCurrency && strtolower($hipayTransaction->getDetailsResult->transactionStatus) != "captured" ){
-
-							if ($this->_order->getState() != \Magento\Sales\Model\Order::STATE_CANCELED && $this->_order->getState() != \Magento\Sales\Model\Order::STATE_PROCESSING){
-								$this->_order->setState(\Magento\Sales\Model\Order::STATE_CANCELED)->setStatus("canceled");
-								$comment = "Authorization failed, " . date('Y-m-d H:i:s');
-								$this->_order->addStatusHistoryComment($comment)->setIsCustomerNotified(true)->setEntityName('order');
-								$this->_order->save();	
-								echo "NO AUTHORIZATION!";
-							}
-						} else{
-							echo "Ignore and wait for capture.";
-						}					
-						break;
-					case "cancellation":
-						echo "Does not apply. Manual capture not active.";
-						break;
-					case "refund":
-						if ($status == "ok"  && $hipayTransaction->getDetailsResult->code == "0" && $hipayTransaction->getDetailsResult->amount == $origAmount && $hipayTransaction->getDetailsResult->currency == $origCurrency && strtolower($hipayTransaction->getDetailsResult->transactionStatus) != "captured"){
-							$comment = "Refunded, " . date('Y-m-d H:i:s');
-							$this->_order->addStatusHistoryComment($comment)->setIsCustomerNotified(false)->setEntityName('order');
-							$this->_order->save();
-							echo "REFUND!";	
-						}
-						break;
-					case "reject":
-						if ($status == "ok"  && $hipayTransaction->getDetailsResult->code == "0" && $hipayTransaction->getDetailsResult->amount == $origAmount && $hipayTransaction->getDetailsResult->currency == $origCurrency && strtolower($hipayTransaction->getDetailsResult->transactionStatus) != "captured"){
-							$comment = "Chargeback, " . date('Y-m-d H:i:s');
+				case "capture":
+					if ($status == "ok" && $hipayTransaction->getDetailsResult->code == "0" && $hipayTransaction->getDetailsResult->amount == $origAmount && $hipayTransaction->getDetailsResult->currency == $origCurrency && strtolower($hipayTransaction->getDetailsResult->transactionStatus) == "captured"){
+		
+						echo "CAPTURE!";
+						if ($this->_order->getState() != \Magento\Sales\Model\Order::STATE_CANCELED && $this->_order->getState() != \Magento\Sales\Model\Order::STATE_PROCESSING){
+							$this->_order->setState(\Magento\Sales\Model\Order::STATE_PROCESSING)->setStatus("processing");
+							$comment = "Captured, " . date('Y-m-d H:i:s');
 							$this->_order->addStatusHistoryComment($comment)->setIsCustomerNotified(true)->setEntityName('order');
 							$this->_order->save();
-							echo "Chargeback";
+						}	
+						
+					} elseif ($status == "nok" && $hipayTransaction->getDetailsResult->code == "0" && $hipayTransaction->getDetailsResult->amount == $origAmount && $hipayTransaction->getDetailsResult->currency == $origCurrency && strtolower($hipayTransaction->getDetailsResult->transactionStatus) != "captured"){
+
+						if ($this->_order->getState() != \Magento\Sales\Model\Order::STATE_CANCELED && $this->_order->getState() != \Magento\Sales\Model\Order::STATE_PROCESSING){
+							$this->_order->setState(\Magento\Sales\Model\Order::STATE_CANCELED)->setStatus("canceled");
+							$comment = "Capture failed, " . date('Y-m-d H:i:s');
+							$this->_order->addStatusHistoryComment($comment)->setIsCustomerNotified(true)->setEntityName('order');
+							$this->_order->save();	
+							echo "NO CAPTURE!";
 						}
-						break;
-				}
-			}	 	
- 	    }
-	}
-	
+					}
+					break;
+				case "authorization":
+					if ($status == "nok"  && $hipayTransaction->getDetailsResult->code == "0" && $hipayTransaction->getDetailsResult->amount == $origAmount && $hipayTransaction->getDetailsResult->currency == $origCurrency && strtolower($hipayTransaction->getDetailsResult->transactionStatus) != "captured" ){
+
+						if ($this->_order->getState() != \Magento\Sales\Model\Order::STATE_CANCELED && $this->_order->getState() != \Magento\Sales\Model\Order::STATE_PROCESSING){
+							$this->_order->setState(\Magento\Sales\Model\Order::STATE_CANCELED)->setStatus("canceled");
+							$comment = "Authorization failed, " . date('Y-m-d H:i:s');
+							$this->_order->addStatusHistoryComment($comment)->setIsCustomerNotified(true)->setEntityName('order');
+							$this->_order->save();	
+							echo "NO AUTHORIZATION!";
+						}
+					} else{
+						echo "Ignore and wait for capture.";
+					}					
+					break;
+				case "cancellation":
+					echo "Does not apply. Manual capture not active.";
+					break;
+				case "refund":
+					if ($status == "ok"  && $hipayTransaction->getDetailsResult->code == "0" && $hipayTransaction->getDetailsResult->amount == $origAmount && $hipayTransaction->getDetailsResult->currency == $origCurrency && strtolower($hipayTransaction->getDetailsResult->transactionStatus) != "captured"){
+						$comment = "Refunded, " . date('Y-m-d H:i:s');
+						$this->_order->addStatusHistoryComment($comment)->setIsCustomerNotified(false)->setEntityName('order');
+						$this->_order->save();
+						echo "REFUND!";	
+					}
+					break;
+				case "reject":
+					if ($status == "ok"  && $hipayTransaction->getDetailsResult->code == "0" && $hipayTransaction->getDetailsResult->amount == $origAmount && $hipayTransaction->getDetailsResult->currency == $origCurrency && strtolower($hipayTransaction->getDetailsResult->transactionStatus) != "captured"){
+						$comment = "Chargeback, " . date('Y-m-d H:i:s');
+						$this->_order->addStatusHistoryComment($comment)->setIsCustomerNotified(true)->setEntityName('order');
+						$this->_order->save();
+						echo "Chargeback";
+					}
+					break;
+			}
+
+        } catch (\Exception $e) {
+			echo "ERROR";
+        }
+		
+
+    }
 	
 	protected function getTransactionStatus($transid,$origCurrency,$origAmount){
 		
@@ -169,8 +146,18 @@ class Index extends AppAction
 		$result = $client->getDetails($parameters);
 		return $result;			
 		
-	}
+	}	
 	
+	
+	public function getRequest()
+    {
+        return $this->_request;
+    }
+
+    public function getResponse()
+    {
+        return $this->_response;
+    }
 	
 }
 	

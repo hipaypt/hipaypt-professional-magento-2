@@ -10,4 +10,7 @@
     <event name="payment_method_assign_data">
         <observer name="hipay_professional_gateway_data_assign" instance="Hipay\HipayProfessionalGateway\Observer\DataAssignObserver" />
     </event>
+    <event name="sales_order_place_before">
+        <observer name="order_before_place" instance="Hipay\HipayProfessionalGateway\Observer\BeforeOrderPlaceObserver" />
+    </event>    
 </config>
