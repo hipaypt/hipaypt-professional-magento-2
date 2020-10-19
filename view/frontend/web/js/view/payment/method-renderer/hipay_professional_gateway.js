@@ -62,8 +62,9 @@ define(
             return true;
         },
         afterPlaceOrder: function () {
-			$('.checkout').prop("disabled", true);
-            window.location.replace(url.build('hipay_professional_gateway/payment/redirect'));
+            $('.checkout').prop("disabled", true);
+            var hRandom = Date.now() + Math.floor(Math.random() * 101);
+            window.location.replace(url.build('hipay_professional_gateway/payment/redirect/index?'+hRandom));
         },
         
             getHipayProfessionalIcon: function () {
