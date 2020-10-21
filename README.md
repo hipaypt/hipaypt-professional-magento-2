@@ -12,6 +12,7 @@ HiPay API production or sandbox account credentials for each currency:
     
   - Enabled: enable or disable extension
   - Sandbox: enable or disable sandbox account
+  - Iframe: enable iframe payment page
   - Account credentials: for each currency enabled, set the API login, password, website id and category id
   - Debug: log payment info
   - Technical Email: this email will receive the notification results
@@ -22,4 +23,4 @@ HiPay API production or sandbox account credentials for each currency:
   - SOAP extension
   - SimpleXML
 
-Version 1.0.1
+Version 1.0.3
