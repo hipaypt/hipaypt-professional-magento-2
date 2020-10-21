@@ -56,6 +56,7 @@ class ClientProcessor implements ClientInterface
 		$obj = $transferObject->getBody();
 		
 		$isSandbox 	= $obj["SANDBOX"];
+		$isIframe 	= $obj["IFRAME"];
 		
 		$objectManager = \Magento\Framework\App\ObjectManager::getInstance(); 
 		$store = $objectManager->get('Magento\Framework\Locale\Resolver'); 
@@ -101,7 +102,8 @@ class ClientProcessor implements ClientInterface
                 'RESULT_CODE' 	=> $result,
                 'REDIRECT_URL' 	=> $result->generateResult->redirectUrl,
                 'ACCOUNT_TYPE' 	=> $platform,
-                'TRANSACTION_ID'=> $this->generateTxnId($result->generateResult->redirectUrl)
+                'IFRAME' 		=> $isIframe,
+                'TRANSACTION_ID'	=> $this->generateTxnId($result->generateResult->redirectUrl)
                 
             ];
 

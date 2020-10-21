@@ -1,0 +1,11 @@
+<?php
+use Magento\Framework\View\Element\Template;
+/** @var Template $block */
+?>
+<p>
+	<?php echo __("If you do not see the payment page correctly please");?>
+	<a href="<?php echo $block->getData('url'); ?>" target="_blank"><?php echo __("click here");?></a>.
+</p>
+<p>
+	<iframe width="100%" height="1200" src='<?php echo $block->getData('url'); ?>' frameborder="0"></iframe>
+</p>

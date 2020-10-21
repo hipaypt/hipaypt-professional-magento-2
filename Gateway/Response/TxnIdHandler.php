@@ -13,6 +13,7 @@ class TxnIdHandler implements HandlerInterface
     const REDIRECT_URL = 'REDIRECT_URL';
     const ACCOUNT_TYPE = 'ACCOUNT_TYPE';
     const TRANSACTION_ID = 'TRANSACTION_ID';
+    const IFRAME = 'IFRAME';
 
     /**
      * Handles transaction id
@@ -35,6 +36,7 @@ class TxnIdHandler implements HandlerInterface
         $payment->setTransactionId($response[self::TRANSACTION_ID]);
         $payment->setAdditionalInformation("redirectUrl",$response[self::REDIRECT_URL]);
         $payment->setAdditionalInformation("accountType",$response[self::ACCOUNT_TYPE]);
+        $payment->setAdditionalInformation("iframe",$response[self::IFRAME]);
         $payment->setIsTransactionClosed(false);
 			
     }

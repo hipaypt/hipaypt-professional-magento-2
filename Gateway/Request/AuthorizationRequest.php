@@ -53,10 +53,11 @@ class AuthorizationRequest implements BuilderInterface
             'EMAIL' 				=> $address->getEmail(),
             'DEBUG' 				=> $this->config->getValue('debug',     				$order->getStoreId() ),
             'SANDBOX' 				=> $this->config->getValue('sandbox',     			$order->getStoreId() ),
+            'IFRAME' 				=> $this->config->getValue('iframe',     			$order->getStoreId() ),
             'TECH_EMAIL' 			=> $this->config->getValue('technical_email',  	$order->getStoreId() ),
-            'WEBSITE_RATING' 		=> $this->config->getValue('website_rating',   $order->getStoreId() ),
+            'WEBSITE_RATING' 			=> $this->config->getValue('website_rating',   $order->getStoreId() ),
             'WEBSITE_LOGO' 			=> $this->config->getValue('website_logo',     	$order->getStoreId() ),
-            'MERCHANT_CREDENTIALS' 	=> $this->config->getValue('api_' .	$order->getCurrencyCode(),     $order->getStoreId() )
+            'MERCHANT_CREDENTIALS' 		=> $this->config->getValue('api_' .	$order->getCurrencyCode(),     $order->getStoreId() )
         );
 
     }
