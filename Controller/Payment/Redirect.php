@@ -39,7 +39,7 @@ class Redirect extends Action
 	$url = $payment->getAdditionalInformation('redirectUrl');
 	$iframe = $payment->getAdditionalInformation('iframe');
 			
-	$this->_order->setState(\Magento\Sales\Model\Order::STATE_PENDING_PAYMENT)->setStatus("pending")->setCanSendNewEmailFlag(true);
+	$this->_order->setState(\Magento\Sales\Model\Order::STATE_PENDING_PAYMENT)->setStatus("pending")->setCanSendNewEmailFlag(false);
 	$this->_order->save();
 			
 	if ($iframe){	

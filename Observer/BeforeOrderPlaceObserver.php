@@ -14,7 +14,7 @@ class BeforeOrderPlaceObserver implements ObserverInterface
 						
         if ($order->getCanSendNewEmailFlag() && $methodCode == "hipay_professional_gateway")
 	{
-		$order->setState(\Magento\Sales\Model\Order::STATE_PENDING_PAYMENT)->setStatus("pending")->setCanSendNewEmailFlag(true)->save();
+		$order->setState(\Magento\Sales\Model\Order::STATE_PENDING_PAYMENT)->setStatus("pending")->setCanSendNewEmailFlag(false)->save();
 	}
     }
 }
